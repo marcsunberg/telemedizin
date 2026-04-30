@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telemedizin Apotheke – Workshop</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --white: #ffffff;
+    --ink: #1e2230;
+    --ink2: #404660;
+    --ink3: #6b7390;
+    --ink4: #9aa0b8;
+    --rule: #ddd9d0;
+    --rule2: #e8e4dd;
+
+    /* device value: decisive */
+    --val-yes: #0a6b58;
+    --val-yes-bg: #e4f4f0;
+    --val-yes-border: #8ecfc4;
+
+    /* device value: helpful */
+    --val-part: #8c5200;
+    --val-part-bg: #fef5e6;
+    --val-part-border: #f0c882;
+
+    /* device value: not needed */
+    --val-no: #5a5a6e;
+    --val-no-bg: #f0eff5;
+    --val-no-border: #c8c6d8;
+
+    /* red flag */
+    --rf: #b02020;
+    --rf-bg: #fdeaea;
+
+    /* chips */
+    --c-oto:   #1260a0; --c-oto-bg:   #e6f0fb;
+    --c-stet:  #0a6b58; --c-stet-bg:  #e4f4f0;
+    --c-therm: #8c5200; --c-therm-bg: #fef5e6;
+    --c-rach:  #5c3590; --c-rach-bg:  #f0eafa;
+    --c-derma: #9a2020; --c-derma-bg: #fdeaea;
+    --c-pcr:   #6a5800; --c-pcr-bg:   #fdf8dc;
+    --c-cov:   #8a2060; --c-cov-bg:   #fce8f2;
+    --c-rr:    #1a5c32; --c-rr-bg:    #e6f5ec;
+
+    /* source tags */
+    --src-huibers: #1e2230;
+    --src-other: #5a5a6e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    padding: 36px 24px 72px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    max-width: 1440px;
+    margin: 0 auto 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+    padding-bottom: 18px;
+    border-bottom: 2.5px solid var(--ink);
+  }
+
+  .h-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+  .h-title span { color: var(--val-yes); font-weight: 400; font-style: italic; }
+
+  .h-sub {
+    margin-top: 5px;
+    font-size: 13px;
+    color: var(--ink3);
+    max-width: 580px;
+    line-height: 1.5;
+  }
+
+  .h-meta {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink4);
+    line-height: 1.7;
+  }
+  .h-pill {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 9.5px;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+
+  /* ── LEGEND ── */
+  .legend-wrap {
+    max-width: 1440px;
+    margin: 16px auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    align-items: flex-start;
+  }
+
+  .legend-group { display: flex; flex-direction: column; gap: 5px; }
+  .legend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--ink4);
+    margin-bottom: 2px;
+  }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .val-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid;
+  }
+  .vb-yes  { background: var(--val-yes-bg);  border-color: var(--val-yes-border);  color: var(--val-yes); }
+  .vb-part { background: var(--val-part-bg); border-color: var(--val-part-border); color: var(--val-part); }
+  .vb-no   { background: var(--val-no-bg);   border-color: var(--val-no-border);   color: var(--val-no); }
+
+  .chip-legend { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  /* ── TABLE ── */
+  .table-outer {
+    max-width: 1440px;
+    margin: 0 auto;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1.5px solid var(--rule);
+    box-shadow: 0 3px 18px rgba(30,34,48,0.08);
+    background: var(--white);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1160px;
+  }
+
+  thead tr { background: var(--ink); }
+  thead th {
+    padding: 11px 15px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(244,241,236,0.55);
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    font-weight: 500;
+  }
+  thead th:last-child { border-right: none; }
+  thead th.th-center { text-align: center; }
+  thead th.th-highlight {
+    color: rgba(244,241,236,0.9);
+    background: rgba(10,107,88,0.35);
+  }
+
+  /* category separator */
+  tr.cat-sep td {
+    background: var(--rule2);
+    padding: 6px 15px 6px 54px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 1.1px;
+    color: var(--ink3);
+    border-bottom: 1px solid var(--rule);
+    font-weight: 500;
+  }
+  tr.cat-sep .src-tag {
+    float: right;
+    font-size: 9px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .src-huibers { background: var(--ink); color: var(--bg); }
+  .src-other   { background: var(--val-no-bg); color: var(--val-no); border: 1px solid var(--val-no-border); }
+
+  /* data rows */
+  tbody tr.row { border-bottom: 1px solid var(--rule2); }
+  tbody tr.row:last-child { border-bottom: none; }
+  tbody tr.row:hover { background: #faf8f4; }
+
+  td {
+    padding: 13px 15px;
+    vertical-align: top;
+    border-right: 1px solid var(--rule2);
+  }
+  td:last-child { border-right: none; }
+
+  /* num */
+  .td-num {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink4);
+    width: 42px;
+    padding-top: 15px;
+  }
+
+  /* symptom */
+  .td-sym { min-width: 170px; max-width: 195px; }
+  .sym-head {
+    font-family: 'Playfair Display', serif;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .sym-mods { display: flex; flex-wrap: wrap; gap: 3px; }
+  .mod-tag {
+    display: inline-block;
+    background: var(--rule2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 10.5px;
+    font-family: 'DM Mono', monospace;
+    color: var(--ink3);
+  }
+
+  /* differentials */
+  .td-diff { min-width: 230px; max-width: 260px; }
+  .diff-list { list-style: none; }
+  .diff-list li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: var(--ink2);
+    line-height: 1.4;
+  }
+  .diff-list li:last-child { margin-bottom: 0; }
+  .dn {
+    flex-shrink: 0;
+    width: 19px; height: 19px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ink3);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+    font-weight: 500;
+  }
+  .dt { flex: 1; }
+  .dt strong { font-weight: 600; color: var(--ink); }
+  .dt .pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink4);
+    margin-left: 3px;
+  }
+  .rf-tag {
+    display: inline-block;
+    padding: 0px 5px;
+    background: var(--rf-bg);
+    border: 1px solid #e8a0a0;
+    border-radius: 3px;
+    font-size: 9.5px;
+    font-family: 'DM Mono', monospace;
+    color: var(--rf);
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── MAIN INNOVATION: device value column ── */
+  .td-val { min-width: 300px; }
+
+  .val-block {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border-left: 3px solid;
+    margin-bottom: 7px;
+  }
+  .val-block:last-child { margin-bottom: 0; }
+
+  .vb-decisive { background: var(--val-yes-bg);  border-color: var(--val-yes); }
+  .vb-helpful  { background: var(--val-part-bg); border-color: var(--val-part); }
+  .vb-none     { background: var(--val-no-bg);   border-color: var(--val-no-border); }
+
+  .vb-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .vb-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 600;
+  }
+  .vb-decisive .vb-label { color: var(--val-yes); }
+  .vb-helpful  .vb-label { color: var(--val-part); }
+  .vb-none     .vb-label { color: var(--val-no); }
+
+  .vb-chips { display: flex; flex-wrap: wrap; gap: 3px; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid;
+  }
+  .c-oto   { color: var(--c-oto);   background: var(--c-oto-bg);   border-color: #aacbee; }
+  .c-stet  { color: var(--c-stet);  background: var(--c-stet-bg);  border-color: var(--val-yes-border); }
+  .c-therm { color: var(--c-therm); background: var(--c-therm-bg); border-color: var(--val-part-border); }
+  .c-rach  { color: var(--c-rach);  background: var(--c-rach-bg);  border-color: #c0a0e0; }
+  .c-derma { color: var(--c-derma); background: var(--c-derma-bg); border-color: #e0a0a0; }
+  .c-pcr   { color: var(--c-pcr);   background: var(--c-pcr-bg);   border-color: #d0c060; }
+  .c-cov   { color: var(--c-cov);   background: var(--c-cov-bg);   border-color: #d890b8; }
+  .c-rr    { color: var(--c-rr);    background: var(--c-rr-bg);    border-color: #80c898; }
+
+  .vb-text {
+    font-size: 12.5px;
+    color: var(--ink2);
+    line-height: 1.5;
+  }
+  .vb-text strong { color: var(--ink); font-weight: 600; }
+  .vb-arrow {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink3);
+    margin-top: 3px;
+  }
+
+  /* ── VALUE SUMMARY ── */
+  .td-sum { min-width: 120px; text-align: center; padding-top: 16px; }
+  .sum-icon {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1.5px solid;
+    line-height: 1.2;
+  }
+  .sum-icon .si-emoji { font-size: 20px; }
+  .si-yes  { background: var(--val-yes-bg);  border-color: var(--val-yes-border);  color: var(--val-yes); }
+  .si-part { background: var(--val-part-bg); border-color: var(--val-part-border); color: var(--val-part); }
+  .si-no   { background: var(--val-no-bg);   border-color: var(--val-no-border);   color: var(--val-no); }
+
+  /* feedback */
+  .td-fb {
+    min-width: 160px;
+    background:
+      repeating-linear-gradient(
+        transparent, transparent 27px,
+        var(--rule2) 27px, var(--rule2) 28px
+      );
+    background-position: 0 14px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    max-width: 1440px;
+    margin: 22px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .footer-box {
+    background: var(--white);
+    border: 1.5px solid var(--rule);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .fb-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ink4);
+    margin-bottom: 8px;
+  }
+  .fb-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fb-text { font-size: 12px; color: var(--ink3); line-height: 1.65; }
+  .fb-text strong { color: var(--ink2); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="h-title">Assistierte Telemedizin in der Apotheke<br>
+      <span>Welche Geräte bringen wirklich etwas?</span>
+    </div>
+    <p class="h-sub">Von Symptomen zu Diagnosen — und wann ein Diagnostikgerät den Unterschied macht. Workshop-Vorlage zur Validierung mit Ärztinnen, Ärzten und Projektteam.</p>
+  </div>
+  <div class="h-meta">
+    <div class="h-pill">Primärquelle: Huibers et al. 2011</div><br>
+    n = 13.154 OOH-Kontakte<br>
+    8 europäische Länder<br>
+    Klinische Evidenz: DEGAM · AAFP · EAU · NICE · ESC
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-wrap">
+  <div class="legend-group">
+    <div class="legend-label">Bringt ein Gerät Mehrwert?</div>
+    <div class="legend-items">
+      <span class="val-badge vb-yes">✓ Ja — entscheidend</span>
+      <span class="val-badge vb-part">~ Ja — hilfreich</span>
+      <span class="val-badge vb-no">✗ Nein — reicht das Gespräch</span>
+    </div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-label">Verfügbare Geräte in der Apotheke</div>
+    <div class="chip-legend">
+      <span class="chip c-oto">Otoskop</span>
+      <span class="chip c-stet">Stethoskop</span>
+      <span class="chip c-therm">Thermometer</span>
+      <span class="chip c-rach">Rachenkamera</span>
+      <span class="chip c-derma">Hautkamera</span>
+      <span class="chip c-pcr">PCR-Test</span>
+      <span class="chip c-cov">COVID/Flu/RSV-Test</span>
+      <span class="chip c-rr">Blutdruckmessung</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-outer">
+<table>
+<thead>
+  <tr>
+    <th class="th-center">#</th>
+    <th>Womit kommt der Patient?<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">Symptomcluster</span></th>
+    <th>Was könnte dahinterstecken?<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">Wahrscheinlichste Diagnosen</span></th>
+    <th class="th-highlight">Bringt ein Gerät Mehrwert?<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.8">Was welches Gerät konkret leistet</span></th>
+    <th class="th-center">Gerät-<br>Mehrwert</th>
+    <th>Feedback der Ärzt:innen<br><span style="font-weight:400;text-transform:none;letter-spacing:0;opacity:.7">Korrekturen · Ergänzungen · Einwände</span></th>
+  </tr>
+</thead>
+<tbody>
+
+<!-- ATEMWEGE -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Atemwege — 20,4 % aller Notfall-Erstkontakte
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">1</td>
+  <td class="td-sym">
+    <div class="sym-head">Halsschmerzen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Fieber</span>
+      <span class="mod-tag">± Belag</span>
+      <span class="mod-tag">± Schluckprobleme</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Viraler Halsinfekt</strong> <span class="pct">~70 %</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Bakterielle Mandelentzündung</strong> (Strep A) <span class="pct">~20–30 %</span></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Pfeiffersches Drüsenfieber</strong> (junge Erw.)</div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Mandelabszess</strong><span class="rf-tag">⚠ Weiterleitung</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend ab Centor-Score ≥ 2</div>
+        <div class="vb-chips"><span class="chip c-rach">Rachenkamera</span></div>
+      </div>
+      <div class="vb-text">Arzt sieht Belag, Rötungsgrad und ob eine Seite stärker geschwollen ist (= Abszess-Alarm). <strong>Ohne Kamera keine visuelle Beurteilung aus der Ferne.</strong></div>
+    </div>
+    <div class="val-block vb-helpful">
+      <div class="vb-header">
+        <div class="vb-label">~ Hilfreich — verändert Behandlung</div>
+        <div class="vb-chips">
+          <span class="chip c-pcr">PCR / Strep-Schnelltest</span>
+          <span class="chip c-therm">Thermometer</span>
+        </div>
+      </div>
+      <div class="vb-text">Strep-Test entscheidet: Antibiotikum ja oder nein. <strong>Ohne Test werden ~50 % zu viel Antibiotika verschrieben.</strong>
+        <span class="vb-arrow">→ Centor 0–1: kein Test, kein Antibiotikum nötig</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">2</td>
+  <td class="td-sym">
+    <div class="sym-head">Husten</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Fieber</span>
+      <span class="mod-tag">± Auswurf</span>
+      <span class="mod-tag">± Atemnot</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Bronchitis</strong> – fast immer viral <span class="pct">~90 %</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>COVID-19 / Grippe / RSV</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Erkältungshusten</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Lungenentzündung</strong><span class="rf-tag">⚠ Weiterleitung</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — Lungenentzündung ausschließen</div>
+        <div class="vb-chips">
+          <span class="chip c-stet">Stethoskop</span>
+          <span class="chip c-therm">Thermometer</span>
+        </div>
+      </div>
+      <div class="vb-text">Arzt hört via Mikrofon: Knistergeräusche oder dumpfer Klopfklang = Verdacht auf Lungenentzündung → sofort Spital. <strong>Ohne Abhören kein sicherer Ausschluss möglich.</strong></div>
+    </div>
+    <div class="val-block vb-helpful">
+      <div class="vb-header">
+        <div class="vb-label">~ Hilfreich — antivirale Therapie möglich</div>
+        <div class="vb-chips"><span class="chip c-cov">COVID/Flu/RSV-Test</span></div>
+      </div>
+      <div class="vb-text">Positiv → spezifische Medikamente möglich (Paxlovid, Tamiflu) — aber nur wenn rechtzeitig (innerhalb 48h–5 Tage)</div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">3</td>
+  <td class="td-sym">
+    <div class="sym-head">Ohrenschmerzen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Fieber</span>
+      <span class="mod-tag">± schlechtes Hören</span>
+      <span class="mod-tag">± Ausfluss</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Mittelohrentzündung</strong> <span class="pct">v.a. Kinder</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Gehörgangsentzündung</strong> (Schwimmerohr)</div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Ohrschmalz-Propf</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Ausstrahlungsschmerz</strong> (vom Hals, Kiefer)</div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — einziger Weg zur Diagnose</div>
+        <div class="vb-chips">
+          <span class="chip c-oto">Otoskop</span>
+          <span class="chip c-therm">Thermometer</span>
+        </div>
+      </div>
+      <div class="vb-text">
+        Das Otoskop-Bild zeigt dem Arzt per Video das Trommelfell direkt:<br>
+        Gerötet + vorgewölbt → Mittelohrentzündung<br>
+        Gehörgang geschwollen + Zugschmerz → Schwimmerohr<br>
+        Propf sichtbar → Ohrschmalz
+        <span class="vb-arrow">→ Ohne Otoskop: Schätzung aus dem Gespräch — unzuverlässig</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- ALLGEMEIN -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Allgemein &amp; unspezifisch — 13,2 % aller Notfall-Erstkontakte
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">4</td>
+  <td class="td-sym">
+    <div class="sym-head">Fieber ohne klaren Grund</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Gliederschmerzen</span>
+      <span class="mod-tag">± Erschöpfung</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Erkältung / grippaler Infekt</strong></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Grippe / COVID-19</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Mittelohrentzündung</strong> (v.a. Kinder)</div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Harnwegsinfekt mit Fieber</strong><span class="rf-tag">⚠ Nierenbeteiligung?</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — ohne Messung keine Diagnose</div>
+        <div class="vb-chips"><span class="chip c-therm">Thermometer</span></div>
+      </div>
+      <div class="vb-text"><strong>Fieber ist nur mit Messung belegbar.</strong> Der genaue Wert entscheidet über die nächsten Schritte — ab 39,5°C Erwachsene engmaschig beobachten; Säuglinge &lt;3 Monate immer ins Spital.</div>
+    </div>
+    <div class="val-block vb-helpful">
+      <div class="vb-header">
+        <div class="vb-label">~ Hilfreich — systematische Ursachensuche</div>
+        <div class="vb-chips">
+          <span class="chip c-cov">COVID/Flu/RSV-Test</span>
+          <span class="chip c-oto">Otoskop</span>
+          <span class="chip c-rach">Rachenkamera</span>
+          <span class="chip c-stet">Stethoskop</span>
+        </div>
+      </div>
+      <div class="vb-text">Kombination aller verfügbaren Geräte findet den Herd des Fiebers — das ist das Ziel dieser Konsultation</div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- HAUT -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Haut — 12,5 % aller Notfall-Erstkontakte (enthält auch Wunden)
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">5</td>
+  <td class="td-sym">
+    <div class="sym-head">Hautver&shy;änderungen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Rötung</span>
+      <span class="mod-tag">± Ausschlag</span>
+      <span class="mod-tag">± Wunde</span>
+      <span class="mod-tag">± Zeckenbiss</span>
+      <span class="mod-tag">± Juckreiz</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Ekzem / atopische Haut</strong></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Kontaktallergie</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Wundrose (Erysipel)</strong> / Impetigo</div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Wanderröte nach Zeckenbiss</strong> (Lyme)</div></li>
+      <li><div class="dn">5</div><div class="dt"><strong>Schnittwunde</strong> – Naht nötig?</div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — Haut muss man sehen</div>
+        <div class="vb-chips">
+          <span class="chip c-derma">Hautkamera</span>
+          <span class="chip c-therm">Thermometer</span>
+        </div>
+      </div>
+      <div class="vb-text">
+        Scharf begrenzte Rötung + warm = Wundrose → Antibiotikum<br>
+        Ringförmige wandernde Rötung = Lyme-Borreliose → sofort behandeln<br>
+        Wundränder klaffen &gt;0,5 cm = Naht nötig → Weiterleitung
+        <span class="vb-arrow">→ Teledermatologie ist die am besten belegte Telemedizin-Anwendung überhaupt</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- VERDAUUNG -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Bauch &amp; Verdauung — 11,6 % aller Notfall-Erstkontakte
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">6</td>
+  <td class="td-sym">
+    <div class="sym-head">Bauch&shy;beschwerden</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Übelkeit</span>
+      <span class="mod-tag">± Erbrechen</span>
+      <span class="mod-tag">± Durchfall</span>
+      <span class="mod-tag">± Schmerzen</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Magen-Darm-Infekt</strong> (meist viral) <span class="pct">häufigste</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Reizdarm / Krämpfe</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Bakt. Magen-Darm-Infekt</strong> (Fieber + Blut)</div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Blinddarmentzündung</strong><span class="rf-tag">⚠ Weiterleitung</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-none">
+      <div class="vb-header">
+        <div class="vb-label">✗ Kein Gerät nötig — reicht das Gespräch</div>
+      </div>
+      <div class="vb-text">Typischer viraler Magen-Darm-Infekt ohne Fieber und ohne Blut: Anamnese reicht völlig. Empfehlung: viel trinken, Elektrolyte.
+        <span class="vb-arrow">→ Medikamente per E-Rezept direkt in der Apotheke verfügbar</span>
+      </div>
+    </div>
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend bei Warnsignalen</div>
+        <div class="vb-chips">
+          <span class="chip c-therm">Thermometer</span>
+          <span class="chip c-stet">Stethoskop</span>
+        </div>
+      </div>
+      <div class="vb-text">Fieber + harter Bauch = chirurgischer Notfall. Keine Darmgeräusche = Darmverschluss → sofort Notaufnahme</div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-part"><span class="si-emoji">~</span>Situativ<br>hilfreich</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- BEWEGUNGSAPPARAT -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Bewegungsapparat — 15,0 % aller Notfall-Erstkontakte
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">7</td>
+  <td class="td-sym">
+    <div class="sym-head">Rücken- &amp; Muskelschmerzen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± nach Trauma</span>
+      <span class="mod-tag">± Ausstrahlung ins Bein</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Hexenschuss / Kreuzschmerz</strong> <span class="pct">häufigste</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Zerrung / Verstauchung</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Muskelverspannung</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Wirbel-/Knochenentzündung</strong><span class="rf-tag">⚠ Fieber + Rücken</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-none">
+      <div class="vb-header">
+        <div class="vb-label">✗ Kein Gerät nötig — reicht das Gespräch</div>
+      </div>
+      <div class="vb-text">Typischer Hexenschuss ohne Warnsignale: Befragung reicht. <strong>Kein Gerät ändert die Behandlung.</strong>
+        <span class="vb-arrow">→ Schmerzmittel per E-Rezept, Wärme, Schonung — sofort verordnungsfähig</span>
+      </div>
+    </div>
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend bei Warnsignalen</div>
+        <div class="vb-chips">
+          <span class="chip c-therm">Thermometer</span>
+          <span class="chip c-derma">Hautkamera</span>
+        </div>
+      </div>
+      <div class="vb-text">Fieber + Rückenschmerz = Notfall. Hautkamera zeigt sichtbare Schwellung / Fehlstellung (Bruch?)</div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-no"><span class="si-emoji">✗</span>Meist<br>nicht nötig</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- AUGE / HARNWEGE -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Auge &amp; Harnwege — in cross-country Top-Codes · ÖAK ApoDoc Kernindikationen 2026
+    <span class="src-tag src-huibers">Huibers 2011 + ÖAK</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">8</td>
+  <td class="td-sym">
+    <div class="sym-head">Augenbeschwerden</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Rötung</span>
+      <span class="mod-tag">± Sekret</span>
+      <span class="mod-tag">± Juckreiz</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Allergische Bindehautentzündung</strong></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Bakterielle Bindehautentzündung</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Virale Bindehautentzündung</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Trockenes Auge / Reizung</strong></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-helpful">
+      <div class="vb-header">
+        <div class="vb-label">~ Hilfreich — unterscheidet Ursache</div>
+        <div class="vb-chips"><span class="chip c-derma">Hautkamera / Augenmakro</span></div>
+      </div>
+      <div class="vb-text">
+        Eitriges Sekret + nur ein Auge → bakteriell → Antibiotikum-Augentropfen<br>
+        Wässrig + beide Augen → viral → kein Antibiotikum<br>
+        Juckreiz + saisonal → allergisch → Antihistaminikum
+        <span class="vb-arrow">→ Bei eindeutiger Allergie-Anamnese: kein Gerät nötig</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-part"><span class="si-emoji">~</span>Ja<br>hilfreich</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">9</td>
+  <td class="td-sym">
+    <div class="sym-head">Brennen beim Wasserlassen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">bei Frauen</span>
+      <span class="mod-tag">± häufiger Harndrang</span>
+      <span class="mod-tag">± Schmerzen</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Blasenentzündung</strong> <span class="pct">häufigste bei Frauen</span></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Nierenbeckenentzündung</strong><span class="rf-tag">⚠ Fieber + Flankenschmerz</span></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>STI / Harnröhrenentzündung</strong></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-none">
+      <div class="vb-header">
+        <div class="vb-label">✗ Goldindikation — kein Gerät nötig</div>
+      </div>
+      <div class="vb-text"><strong>Die typischen 3 Symptome + kein Fieber + kein Ausfluss = Blasenentzündung.</strong> Laut AAFP 2024 und EAU 2023: Diagnose ohne körperliche Untersuchung möglich.
+        <span class="vb-arrow">→ Antibiotikum per E-Rezept sofort — Kernindikation ApoDoc (ÖAK)</span>
+      </div>
+    </div>
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — Nierenbeteiligung ausschließen</div>
+        <div class="vb-chips"><span class="chip c-therm">Thermometer</span></div>
+      </div>
+      <div class="vb-text">Fieber &gt;38°C = Nierenbeckenentzündung → Weiterleitung. <strong>Ohne Messung dieser eine Fehler möglich.</strong></div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-no"><span class="si-emoji">✗</span>Meist<br>nicht nötig</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- HERZ-KREISLAUF -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Herz-Kreislauf — dominant bei 65+ (Huibers 2011: DE 10,8 %, CH 9,2 %)
+    <span class="src-tag src-huibers">Huibers 2011</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">10</td>
+  <td class="td-sym">
+    <div class="sym-head">Brustschmerz / Herzklopfen</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Atemnot</span>
+      <span class="mod-tag">± hoher Blutdruck</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Blutdruckkrise</strong> (v.a. 65+)</div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Muskelbedingter Brustschmerz</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Herzstolpern / Angst</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Herzinfarkt / Lungenembolie</strong><span class="rf-tag">⚠ Notruf 144</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend — ohne Zahl keine Entscheidung</div>
+        <div class="vb-chips">
+          <span class="chip c-rr">Blutdruckmessung</span>
+          <span class="chip c-stet">Stethoskop</span>
+        </div>
+      </div>
+      <div class="vb-text">
+        RR &gt;180/120 ohne Symptome → Medikament anpassen<br>
+        RR &gt;180/120 + Symptome (Kopfschmerz, Sehstörung) → sofort Notaufnahme<br>
+        <strong>Ohne RR-Messung: keine einzige dieser Entscheidungen möglich.</strong>
+        <span class="vb-arrow">→ Ausstrahlung + Schweißausbruch + Atemnot = sofort 144</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-yes"><span class="si-emoji">✓</span>Ja<br>entscheidend</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- GYNÄKOLOGIE -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Gynäkologie — 3–6 % in OOH-Studien (nicht in Huibers Top-5, aber konsistent in anderen europäischen OOH-Daten)
+    <span class="src-tag src-other">Philips 2019 · DE OOH · nicht Huibers</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">11</td>
+  <td class="td-sym">
+    <div class="sym-head">Unterleibsschmerzen / Ausfluss</div>
+    <div class="sym-mods">
+      <span class="mod-tag">bei Frauen</span>
+      <span class="mod-tag">± Fieber</span>
+      <span class="mod-tag">± Zyklusproblem</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Vaginale Infektion</strong> (Pilz, Bakterien)</div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Menstruationsbeschwerden / Dysmenorrhö</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Entzündung der Gebärmutter / Eileiter</strong></div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Eileiterschwangerschaft</strong><span class="rf-tag">⚠ Notfall</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-decisive">
+      <div class="vb-header">
+        <div class="vb-label">✓ Entscheidend bei Fieber-Verdacht</div>
+        <div class="vb-chips"><span class="chip c-therm">Thermometer</span></div>
+      </div>
+      <div class="vb-text">Fieber + Unterleibsschmerz = Entzündung der inneren Organe → Weiterleitung. <strong>Ohne Messung wird dieser Ernstfall übersehen.</strong></div>
+    </div>
+    <div class="val-block vb-none">
+      <div class="vb-header">
+        <div class="vb-label">✗ Kein weiteres Gerät hilfreich</div>
+      </div>
+      <div class="vb-text">Pilzinfektion, Menstruationsbeschwerden, leichter Ausfluss: rein anamnestisch gut abklärbar. Die verfügbaren Geräte der Apotheke helfen gynäkologisch nicht weiter — Ausnahme Thermometer.
+        <span class="vb-arrow">→ Grenzen des Gerätesets klar kommunizieren</span>
+      </div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-part"><span class="si-emoji">~</span>Begrenzt<br>hilfreich</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+<!-- PSYCHIATRIE -->
+<tr class="cat-sep">
+  <td colspan="6">
+    Psychische Beschwerden — 3–5 % in OOH-Studien (nicht in Huibers Top-5, prominent in DE/NL Daten bei Erwachsenen)
+    <span class="src-tag src-other">Bayern OOH 2017 · NL OOH · nicht Huibers</span>
+  </td>
+</tr>
+
+<tr class="row">
+  <td class="td-num">12</td>
+  <td class="td-sym">
+    <div class="sym-head">Psychische Belastung / Angst</div>
+    <div class="sym-mods">
+      <span class="mod-tag">± Schlafstörung</span>
+      <span class="mod-tag">± Panik</span>
+      <span class="mod-tag">± Erschöpfung</span>
+    </div>
+  </td>
+  <td class="td-diff">
+    <ul class="diff-list">
+      <li><div class="dn">1</div><div class="dt"><strong>Akute Angst- / Panikattacke</strong></div></li>
+      <li><div class="dn">2</div><div class="dt"><strong>Schlafstörungen / Insomnie</strong></div></li>
+      <li><div class="dn">3</div><div class="dt"><strong>Akute Belastungsreaktion</strong> (Krise, Trauer)</div></li>
+      <li><div class="dn">4</div><div class="dt"><strong>Depression in Krise</strong><span class="rf-tag">⚠ Suizidalität → Weiterleitung</span></div></li>
+    </ul>
+  </td>
+  <td class="td-val">
+    <div class="val-block vb-none">
+      <div class="vb-header">
+        <div class="vb-label">✗ Kein Gerät nötig — das Gespräch ist die Therapie</div>
+      </div>
+      <div class="vb-text">Psychische Beschwerden sind eine der <strong>stärksten Telemedizin-Indikationen ohne Gerät</strong>: Niedrigschwelligkeit, Anonymität und Distanz sind therapeutisch positiv. Der Arzt im Video-Call hilft direkt — kein Gerät verbessert das.
+        <span class="vb-arrow">→ Kurzzeitmedikation (Schlafmittel, Anxiolytika) per E-Rezept möglich</span>
+      </div>
+    </div>
+    <div class="val-block vb-helpful">
+      <div class="vb-header">
+        <div class="vb-label">~ Hilfreich bei körperlichen Begleitsymptomen</div>
+        <div class="vb-chips">
+          <span class="chip c-rr">Blutdruckmessung</span>
+          <span class="chip c-therm">Thermometer</span>
+        </div>
+      </div>
+      <div class="vb-text">Panikattacke kann hohen Blutdruck auslösen — RR-Messung beruhigt oder alarmiert. Fieber schließt somatische Ursache aus.</div>
+    </div>
+  </td>
+  <td class="td-sum"><div class="sum-icon si-no"><span class="si-emoji">✗</span>Nicht<br>nötig</div></td>
+  <td class="td-fb"></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-box">
+    <div class="fb-title">Geräte in dieser Apotheke</div>
+    <div class="fb-chips">
+      <span class="chip c-oto">Otoskop</span>
+      <span class="chip c-stet">Stethoskop</span>
+      <span class="chip c-therm">Thermometer</span>
+      <span class="chip c-rach">Rachenkamera</span>
+      <span class="chip c-derma">Hautkamera (Derma)</span>
+      <span class="chip c-pcr">PCR-Test</span>
+      <span class="chip c-cov">COVID / Influenza / RSV-Test</span>
+      <span class="chip c-rr">Blutdruckmessung</span>
+    </div>
+  </div>
+  <div class="footer-box">
+    <div class="fb-title">Datengrundlage &amp; Quellen</div>
+    <p class="fb-text">
+      <strong>Häufigkeiten:</strong> Huibers et al. BMC Fam Pract 2011 (n=13.154, OOH, 8 EU-Länder) · Philips et al. 2019 (n=804.580, BE/NL) · Bayern OOH 2017 · ÖAK ApoDoc 2026<br>
+      <strong>Gynäkologie &amp; Psychiatrie:</strong> nicht in Huibers Top-5, aber konsistent in länderspezifischen OOH-Daten (3–5 %)<br>
+      <strong>Diagnostik-Evidenz:</strong> AAFP 2024 · EAU 2023 · DEGAM · NICE · ESC/ESH 2023 · Ottawa Rules
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
